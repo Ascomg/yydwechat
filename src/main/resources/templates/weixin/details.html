@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="format-detection" content="telephone=yes" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge，chrome=1">
+    <meta name="viewport" content="width=320,maximum-scale=2.1,user-scalable=no">
+    <title>参与详情</title>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css">
+    <link rel="stylesheet" type="text/css" href="../css/drawstyle.css">
+    <script type="text/javascript"  src="../js/jquery1.10.2.min.js"></script>
+    <script type="text/javascript"  src="../js/js.js"></script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <script>
+        (function(win,doc){
+            var fresh = function() {
+                var html = doc.documentElement;
+                var w = html.clientWidth;
+                html.style.fontSize = (w/10) + 'px';
+            }
+            if(document.readyState === "complete") {
+                fresh();
+            } else {
+                document.addEventListener( "DOMContentLoaded", fresh, false );
+            }
+            win.addEventListener('resize' , fresh , false);
+        })(window,document)
+
+    </script>
+    <style>
+        #cancelled li{
+            float: left;
+            padding-left: 0.2rem;
+        }
+    </style>
+
+</head>
+<body>
+<div class="order_tab">
+    <ul class="order_tabul exchan_tabul" id="lp_order">
+        <li>助力值</li>
+        <li>参与者</li>
+    </ul>
+</div>
+<div style="height:1.2rem;"></div>
+<div class="order_box">
+    <!-- 已兑换 -->
+    <div class="order_all" th:fragment="draw_user">
+        <ul id="redeemed" th:each="user:${drawUser}">
+            <li >
+                <span  style="font-size: 0.4rem;margin-left:0.4rem;"><img  th:src="@{${user.getHeadUrl()}}"  style="width: 0.6rem;height:0.6rem;border-radius:50%;"/><i th:text="${user.getName()}" style="height:0.6rem;line-height: 0.6rem;"/></span>
+                <span style="font-size: 0.4rem;text-align: right;" ><img  src="../images/timg.jpg"  style="width: 0.6rem;height:0.6rem;border-radius:50%"/><i th:text="${user.getParticipantCount()}"/></span>
+            </li>
+        </ul>
+    </div>
+    <!-- 已取消 -->
+    <div class="order_all" th:fragment="draw_img">
+        <p style="font-size: 0.4rem;color: grey;text-align: center;"><i th:text="${participantCount}"/>位参与者</p>
+        <ul id="cancelled" th:each="user:${draw}" style="margin-top: 0px;">
+            <li><img  th:src="@{${user.getHeadUrl()}}"  style="width: 0.9rem;height:0.9rem;"/></li>
+        </ul>
+    </div>
+</div>
+
+</body>
+<script type="text/javascript" th:inline="javascript">
+    $("#lp_order li").click(function(){
+        var i = $(this).index();
+        $(".order_all:eq("+i+")").load('drawUser?sid='+[[${sid}]]+'&index='+i);
+
+    });
+</script>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>抽奖活动新增</title>
+    <meta name="content-type" content="text/html; charset=UTF-8">
+    <link href="../layui/css/layui.css" rel="stylesheet" />
+    <script src="../layui/layui.js"></script>
+    <script src="../js/jquery-1.9.0.js"></script>
+    <script src="../js/common.js" type="text/javascript"></script>
+  	<script src="../kindEditor/js/kindeditor-min.js" charset="utf-8"></script>
+	<script src="../kindEditor/js/zh_CN.js" charset="utf-8" ></script>
+	<link  href="../kindEditor/css/default.css" rel="stylesheet"/>
+  </head>
+<body>
+ <form class="layui-form" style="margin-top:20px;" id="news">
+ <input type="hidden" name="sid" id="sid" /> 
+  <div class="layui-form-item">
+     <label class="layui-form-label" style="width:100px;">奖品名称</label>
+     <div class="layui-input-block">
+         <input type="text" name="sname" lay-verify="sname"  style="width:600px;" placeholder="请输入奖品名称" class="layui-input">
+
+     </div>
+ </div>
+     <div class="layui-form-item">
+         <label class="layui-form-label" style="width:100px;">开奖时间</label>
+         <div class="layui-input-block">
+             <input type="text" class="layui-input" placeholder="yyyy-MM-dd HH:mm:ss"  id="lotterytime" name="lotterytime" lay-verify="lotterytime"  style="width:600px;" >
+
+         </div>
+     </div>
+     <div class="layui-form-item">
+         <label class="layui-form-label" style="width:100px;">小程序链接</label>
+         <div class="layui-input-block">
+             <input type="text" name="appurl" lay-verify="appurl"  style="width:600px;" placeholder="请输入链接" class="layui-input">
+
+         </div>
+     </div><div class="layui-form-item">
+     <label class="layui-form-label" style="width:100px;">广告链接</label>
+     <div class="layui-input-block">
+         <input type="text" name="advertiseurl" lay-verify="advertiseurl"  style="width:600px;" placeholder="请输入文本消息" class="layui-input">
+
+     </div>
+ </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label" style="width:100px;">奖品图片</label>
+      <div class="layui-input-inline">
+        <button type="button" class="layui-btn  layui-btn-sm" id="big">上传图片</button>
+        <button type="button" class="layui-btn layui-btn-sm  layui-btn-disabled deletebig" id="delbig"  disabled="disabled">删除图片</button>
+        <input type="hidden" name="picurl" id="picurl" lay-verify="required"  class="layui-input">
+        <!-- <input type="hidden" name="url" autocomplete="off" style="width:600px;" class="layui-input" > -->
+         <div class="layui-upload-list">
+    		<img class="layui-upload-img" id="bigp" style="width:180px;height:100px;">
+   		</div>	 
+      </div>
+	<div class="layui-form-mid layui-word-aux">图片分辨率为750×1334，仅支持png和jpg图片上传</div>
+  </div>
+
+     <div class="layui-form-item">
+         <label class="layui-form-label" style="width:100px;">广告图片</label>
+         <div class="layui-input-inline">
+             <button type="button" class="layui-btn  layui-btn-sm" id="pic">上传图片</button>
+             <button type="button" class="layui-btn layui-btn-sm  layui-btn-disabled deletebig" id="depic"  disabled="disabled">删除图片</button>
+             <input type="hidden" name="advertisePic" id="advertisePic"   class="layui-input">
+             <!-- <input type="hidden" name="url" autocomplete="off" style="width:600px;" class="layui-input" > -->
+             <div class="layui-upload-list">
+                 <img class="layui-upload-img" id="picp" style="width:180px;height:100px;">
+             </div>
+         </div>
+         <div class="layui-form-mid layui-word-aux">图片分辨率为750×1334，仅支持png和jpg图片上传</div>
+     </div>
+     <div class="layui-form-item">
+         <label class="layui-form-label" style="width:100px;">赞助商</label>
+         <div class="layui-input-inline">
+             <button type="button" class="layui-btn  layui-btn-sm" id="sp">上传图片</button>
+             <button type="button" class="layui-btn layui-btn-sm  layui-btn-disabled deletebig" id="desp"  disabled="disabled">删除图片</button>
+             <input type="hidden" name="sponsoric" id="sponsoric"   class="layui-input">
+             <!-- <input type="hidden" name="url" autocomplete="off" style="width:600px;" class="layui-input" > -->
+             <div class="layui-upload-list">
+                 <img class="layui-upload-img" id="spp" style="width:180px;height:100px;">
+             </div>
+         </div>
+         <div class="layui-form-mid layui-word-aux">图片分辨率为750×1334，仅支持png和jpg图片上传</div>
+     </div>
+
+     <div class="layui-form-item">
+         <label class="layui-form-label" style="width:100px;">文本内容</label>
+         <div class="layui-input-block">
+             <textarea  name="textmsg"  lay-verify="textmsg"  style="height:400px;" id="editor"></textarea>
+
+         </div>
+     </div>
+  <div class="layui-form-item">
+    <div class="layui-input-block">
+      <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    </div>
+  </div>
+</form>
+<script>
+    var editor;
+    KindEditor.ready(function(K) {
+        editor = K.create('textarea[name="textmsg"]', {
+            resizeType : 2,//2时可以拖动改变宽度和高度，1时只能改变高度，0时不能拖动
+            allowImageUpload : true,
+            uploadJson : '../kindEditor/js/upload_json.jsp?stype=news',
+            allowFileManager : true,
+            items: [
+                'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+                'removeformat', '|', 'indent','outdent','justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+                'insertunorderedlist', '|', 'emoticons', 'image', 'link','source'],
+            afterUpload : function(url, data, name) { //上传文件后执行的回调函数，必须为3个参数
+                if(name=="image" || name=="multiimage"){ //单个和批量上传图片时
+
+                    var img = new Image();
+                    img.src = url;
+                    img.onload = function(){
+                        if(img.width>600){
+                            editor.html(editor.html().replace('<img src="' + url + '"','<img src="' + url + '" width="600"'))
+                            var ua = navigator.userAgent.toLocaleLowerCase()
+                            if (ua.match(/trident/) != null) {
+                                editor.html(editor.html().replace('<img alt="" ','<img alt="" width="600"'))
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+
+layui.use(['form','upload','layedit'], function(){
+  var layedit = layui.layedit,upload = layui.upload,form=layui.form, $=layui.jquery,laydate = layui.laydate;;
+
+    laydate.render({
+        elem: '#lotterytime'
+        ,type:'datetime'
+
+    });
+    var surl="../draw/add";
+	$(function(){
+		  $("#sid").val(GetArgsFromHref("sid"));
+        if($("#sid").val()!==""&&$("#sid").val()!=null){
+
+            getData();
+            surl="../key/edit";
+        }
+	})
+
+
+  function getData(){
+	 $.ajax({
+			url : "../draw/getById",// 跳转到 action
+			data : {
+				sid : $("#sid").val(),
+				stime:(new Date()).getTime()
+			},
+	  		type : "post",
+	  		cache : false,
+	  		dataType : "json",
+	  		success : function(data) {
+	  			if(data.status){
+	  				var info=data.data;
+
+	  				$("#bigp").attr("src","../"+info.picurl);
+	  				$("#del").removeClass("layui-btn-disabled");
+	  	      	    $("#del").addClass("layui-btn-danger");
+	  	      	    $("#del").attr("disabled",false);
+	  	      		$("#delbig").removeClass("layui-btn-disabled");
+	        	 	$("#delbig").addClass("layui-btn-danger");
+	        	    $("#delbig").attr("disabled",false);
+	        	    $("#big").attr("disabled",true);
+	        	    $("#big").addClass("layui-btn-disabled");
+	  				setEditorText(info.content);
+	  				$("#news").setForm(info);
+                    laydate.render({
+                        elem: '#lotterytime'
+                        ,type:'datetime'
+                        , value:info.lotterytime
+
+                    });
+	  				form.render('select');
+
+	  			}else{
+	  				 layer.msg(data.message);  
+	  			}
+	  		},
+	  		error : function() {
+	  			 layer.msg("网络操作请求失败!");  
+	  		}
+		 
+	 }) 
+  }
+
+  
+  //普通图片上传
+  var uploadInst = upload.render({
+      elem: '#big'
+     ,url: '../news/upload'
+      ,method:'post'
+      ,accept:'images'
+      ,acceptMime:'image/*'
+      ,field:'projectImg'
+     ,before: function(obj){
+      //预读本地文件示例，不支持ie8
+      obj.preview(function(index, file, result){
+    	$('#bigp').css("display","");
+        $('#bigp').attr('src', result); //图片链接（base64）
+      });
+    }
+    ,done: function(res){
+      if(!res.status){
+        return layer.msg('上传失败');
+      }else{
+    	  $("#delbig").removeClass("layui-btn-disabled");
+      	  $("#delbig").addClass("layui-btn-danger");
+      	  $("#delbig").attr("disabled",false);
+      	  $("#big").attr("disabled",true);
+      	  $("#big").addClass("layui-btn-disabled");
+    	  $("#picurl").val(res.newName);
+          layer.msg(res.newName);
+      }
+    }
+  });
+
+
+  form.on('submit(formDemo)', function(data){
+      data.field["textmsg"]=getEditorHtml();
+     $.ajax({
+   		url : "../draw/add",// 跳转到 action
+        data: data.field,
+   		// data : {
+   		// 	parms :JSON.stringify(data.field),
+   		// 	menu_id:GetArgsFromHref("menu_id"),
+   		// 	stime : (new Date()).getTime()
+   		// },
+   		type : "post",
+   		cache : false,
+   		dataType : "json",
+   		success : function(data) {
+   			if (data.status) {
+   				layer.msg(data.message, { icon: 6 });
+   				if($("#sid").val()==""||$("#sid").val()==null){  	
+   					$('#news')[0].reset();
+   	   				clearEditor();
+   	   				$("#bigp").removeAttr("src");
+   	   				$("#smallp").removeAttr("src");
+   				}
+   				 				
+   			} else {
+   				layer.msg(data.message, { icon: 5 });
+   			}
+   		},
+   		error : function() {
+   			layer.msg("网络操作请求失败");
+   		}	
+    	
+    });
+    
+    return false;
+  });
+
+	 $("form").on("click",".delete",function(obj){
+		 var $delimg=$(this);
+		   
+		 	$.ajax({
+				url : "../zjd/deletefile.do",// 跳转到 action    
+				data : {
+					srch_nr : $(this).siblings("#smallPic").val(),
+					stime : (new Date()).getTime()
+				},
+				type : "post",
+				cache : false,
+				success : function(data) {
+					if (data == "success") {
+						 $delimg.removeClass("layui-btn-danger");
+						 $delimg.addClass("layui-btn-disabled");
+						 $delimg.siblings("#smallPic").val("");
+						 $delimg.siblings("div").find("#smallp").attr('src',"");
+						 $delimg.siblings("#small").removeClass("layui-btn-disabled");
+						 $delimg.siblings("#small").attr("disabled", false);
+						layer.msg("删除成功");
+					} else {
+						layer.msg(data.message);
+					}
+				},
+				error : function() {
+					layer.msg("网络操作请求失败!");
+				}
+
+			})
+		});
+	 
+	 $("form").on("click",".deletebig",function(obj){
+		 var $delimg=$(this);
+		   
+		 	$.ajax({
+				url : "../zjd/deletefile.do",// 跳转到 action    
+				data : {
+					srch_nr : $(this).siblings("#picurl").val(),
+					stime : (new Date()).getTime()
+				},
+				type : "post",
+				cache : false,
+				success : function(data) {
+					if (data == "success") {
+						 $delimg.removeClass("layui-btn-danger");
+						 $delimg.addClass("layui-btn-disabled");
+						 $delimg.siblings("#picurl").val("");
+						 $delimg.siblings("div").find("#bigp").attr('src',"");
+						 $delimg.siblings("#big").removeClass("layui-btn-disabled");
+						 $delimg.siblings("#big").attr("disabled", false);
+						layer.msg("删除成功");
+					} else {
+						layer.msg(data.message);
+					}
+				},
+				error : function() {
+					layer.msg("网络操作请求失败!");
+				}
+
+			})
+		});
+  
+});
+
+	function getEditorHtml(){
+		return editor.html();
+	}
+	
+	function setEditorText(encryCode){
+		editor.html(encryCode);
+	}
+	
+	function clearEditor(){
+		editor.html("");
+	}
+
+</script>
+</body>
+</html>

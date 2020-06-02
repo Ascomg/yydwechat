@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+        <mapper namespace="com.yuyuedao.yydwechat.mapper.MsgRspMapper">
+
+
+
+        <insert id="add" parameterType="com.yuyuedao.yydwechat.entity.W_p_key">
+            insert into w_p_key(type,keyword,accountId,textMsg,createTime,newSid) values(#{type},#{keyword},#{accountId},#{textMsg},getdate(),#{newSid})
+
+        </insert>
+
+
+
+
+        <select id="getByMr" resultType="com.yuyuedao.yydwechat.entity.W_p_gzhf">
+                select sid,stype,textMsg,newsid,accountid
+                from w_p_gzhf
+                <where>
+                        <if test="type != null and type != ''">
+                                stype=#{type}
+                        </if>
+
+
+                </where>
+
+        </select>
+
+
+        
+
+        </mapper>

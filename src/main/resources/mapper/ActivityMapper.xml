@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+        <mapper namespace="com.yuyuedao.yydwechat.mapper.ActivityMapper">
+
+        <select id="getParticipantList" resultType="com.yuyuedao.yydwechat.entity.Activity">
+        select DISTINCT nickname name,head_url,
+        (select count(DISTINCT openid) from activity_participant where invate_openid=a.openid and activityId=a.draw_activity_id and stype='draw' ) participantCount,
+        a.draw_activity_id activityName from draw_participant a,w_p_fans b
+        <where>
+                a.openid=b.openid
+                <if test="activityId !=null and activityId !=''">
+                        and a.draw_activity_id=#{activityId}
+                </if>
+
+        </where>
+
+        </select>
+
+        </mapper>

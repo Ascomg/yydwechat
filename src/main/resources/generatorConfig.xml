@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration>
+
+
+    <classPathEntry location="D:\util\repository\com\microsoft\sqlserver\mssql-jdbc\7.4.1.jre8\mssql-jdbc-7.4.1.jre8.jar"/>
+
+
+    <!-- database context -->
+    <context id="CORE_SCHEMA">
+
+        <!-- comment setting-->
+        <commentGenerator >
+            <property name="suppressAllComments" value="false"/><!-- 是否取消注释 -->
+            <property name="suppressDate" value="true" /> <!-- 是否生成注释代时间戳-->
+        </commentGenerator>
+
+
+        <jdbcConnection driverClass="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+                        connectionURL="jdbc:sqlserver://127.0.0.1:1433;DatabaseName=yydwechat"
+                        userId="sa"
+                        password="123456"
+        />
+
+
+
+        <!-- 类型转换 -->
+        <javaTypeResolver>
+            <!-- 是否使用bigDecimal， false可自动转化以下类型（Long, Integer, Short, etc.） -->
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+
+        <!-- 生成实体类地址 -->
+        <javaModelGenerator targetPackage="com.yuyuedao.yydwechat.entity"
+                            targetProject="src/main/java">
+            <!-- 是否在当前路径下新加一层schema,eg：fase路径com.oop.eksp.user.model， true:com.oop.eksp.user.model.[schemaName] -->
+            <property name="enableSubPackages" value="false"/>
+            <!-- 是否针对string类型的字段在set的时候进行trim调用 -->
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+        <!-- 生成mapxml文件 -->
+        <sqlMapGenerator targetPackage="resources.mapper.generator"
+                         targetProject="src\main" >
+            <!-- 是否在当前路径下新加一层schema,eg：fase路径com.oop.eksp.user.model， true:com.oop.eksp.user.model.[schemaName] -->
+            <property name="enableSubPackages" value="false" />
+        </sqlMapGenerator>
+
+        <!-- 生成mapxml对应client，也就是接口dao -->
+        <javaClientGenerator targetPackage="com.yuyuedao.yydwechat.mapper.generator"
+                             targetProject="src/main/java"
+                             type="XMLMAPPER" >
+            <!-- 是否在当前路径下新加一层schema,eg：fase路径com.oop.eksp.user.model， true:com.oop.eksp.user.model.[schemaName] -->
+            <property name="enableSubPackages" value="false" />
+        </javaClientGenerator>
+
+
+        <table tableName="W_p_newsdetails" domainObjectName="WPNewsdetails"    enableCountByExample="true"
+               enableDeleteByExample="true" enableSelectByExample="true"
+               enableUpdateByExample="true">
+            <generatedKey column="sid" sqlStatement="sqlserver" identity="true" />
+        </table>
+        <table tableName="W_p_gzhf" domainObjectName="WPGzhf"    enableCountByExample="true"
+               enableDeleteByExample="true" enableSelectByExample="true"
+               enableUpdateByExample="true">
+            <generatedKey column="sid" sqlStatement="sqlserver" identity="true" />
+        </table>
+
+        <table tableName="W_p_fans" domainObjectName="WPFans"    enableCountByExample="true"
+               enableDeleteByExample="true" enableSelectByExample="true"
+               enableUpdateByExample="true">
+            <generatedKey column="sid" sqlStatement="sqlserver" identity="true" />
+        </table>
+
+
+        <table tableName="Poster" domainObjectName="Poster"    enableCountByExample="true"
+               enableDeleteByExample="true" enableSelectByExample="true"
+               enableUpdateByExample="true">
+            <generatedKey column="sid" sqlStatement="sqlserver" identity="true" />
+        </table>
+
+        <table tableName="w_p_menu" domainObjectName="WPMenu"    enableCountByExample="true"
+               enableDeleteByExample="true" enableSelectByExample="true"
+               enableUpdateByExample="true">
+            <generatedKey column="sid" sqlStatement="sqlserver" identity="true" />
+        </table>
+
+        <table tableName="Poster_activity" domainObjectName="PosterActivity"    enableCountByExample="true"
+               enableDeleteByExample="true" enableSelectByExample="true"
+               enableUpdateByExample="true">
+            <generatedKey column="sid" sqlStatement="sqlserver" identity="true" />
+        </table>
+
+        <table tableName="Poster_questions" domainObjectName="PosterQuestions"    enableCountByExample="true"
+               enableDeleteByExample="true" enableSelectByExample="true"
+               enableUpdateByExample="true">
+            <generatedKey column="sid" sqlStatement="sqlserver" identity="true" />
+        </table>
+
+        <table tableName="Poster_question_details" domainObjectName="PosterQuestionDetails"    enableCountByExample="true"
+               enableDeleteByExample="true" enableSelectByExample="true"
+               enableUpdateByExample="true">
+            <generatedKey column="sid" sqlStatement="sqlserver" identity="true" />
+        </table>
+
+        <table tableName="a_token" domainObjectName="AToken"    enableCountByExample="true"
+               enableDeleteByExample="true" enableSelectByExample="true"
+               enableUpdateByExample="true">
+            <generatedKey column="sid" sqlStatement="sqlserver" identity="true" />
+        </table>
+
+
+        <table tableName="activity_participant" domainObjectName="ActivityParticipant"    enableCountByExample="true"
+               enableDeleteByExample="true" enableSelectByExample="true"
+               enableUpdateByExample="true">
+            <generatedKey column="sid" sqlStatement="sqlserver" identity="true" />
+        </table>
+
+        <table tableName="textMsg" domainObjectName="TextMsg"    enableCountByExample="true"
+               enableDeleteByExample="true" enableSelectByExample="true"
+               enableUpdateByExample="true">
+            <generatedKey column="sid" sqlStatement="sqlserver" identity="true" />
+        </table>
+
+        <table tableName="draw_activity" domainObjectName="DrawActivity"    enableCountByExample="true"
+               enableDeleteByExample="true" enableSelectByExample="true"
+               enableUpdateByExample="true">
+            <generatedKey column="sid" sqlStatement="sqlserver" identity="true" />
+        </table>
+
+        <table tableName="draw_winning" domainObjectName="DrawWinning"    enableCountByExample="true"
+               enableDeleteByExample="true" enableSelectByExample="true"
+               enableUpdateByExample="true">
+            <generatedKey column="sid" sqlStatement="sqlserver" identity="true" />
+        </table>
+
+        <table tableName="draw_participant" domainObjectName="DrawParticipant"    enableCountByExample="true"
+               enableDeleteByExample="true" enableSelectByExample="true"
+               enableUpdateByExample="true">
+            <generatedKey column="sid" sqlStatement="sqlserver" identity="true" />
+        </table>
+
+
+
+    </context>
+</generatorConfiguration>

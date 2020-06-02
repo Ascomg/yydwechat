@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="email=no">
+    <title>抽奖详情</title>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css">
+    <link rel="stylesheet" type="text/css" href="../css/drawstyle.css">
+    <script type="text/javascript"  src="../js/jquery1.10.2.min.js"></script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <script>
+        (function(win,doc){
+            const fresh = function () {
+                const html = doc.documentElement;
+                const w = html.clientWidth;
+                html.style.fontSize = (w / 10) + 'px';
+            };
+            if(document.readyState === "complete") {
+                fresh();
+            } else {
+                document.addEventListener( "DOMContentLoaded", fresh, false );
+            }
+            win.addEventListener('resize' , fresh , false);
+        })(window,document)
+
+    </script>
+</head>
+<body bgcolor="white">
+<div class="detailed_banner">
+    <div class="swiper-container">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide">
+                <img id="exppath1" alt=""  th:src="@{'../'+${data.getPicurl()}}">
+            </div>
+        </div>
+        <div class="swiper-pagination"></div>
+    </div>
+</div>
+<div class="detailed_name">
+    <h3>奖品：</h3><h3 th:text="${data.getSname()}"></h3>
+    <p class="exchan_money"><span  th:text="${#dates.format(data.getLotterytime(), 'yyyy.MM.dd HH:mm')}" ></span>&nbsp;&nbsp;自动开奖<span id="share" style="display: inline-block; text-decoration: none;margin-left:4.4rem;">
+                <img src="../images/icon/tab_fx1.png" alt="" style="width:0.5rem;height:0.3rem;padding-top: 0.1rem">
+                <i style="font-size:0.3rem; padding:0; color:#848484;margin:0">分享</i>
+           </span></p>
+        </div>
+        <hr style="background-color:#d58512; height:1px; border:none;">
+
+        <p style="padding: 0rem 0.3rem;line-height: 0.6rem;"> <i style="font-size:0.4rem;">御约道</i><a th:href="${data.getAppurl()}" > <i style="font-size:0.4rem;">去体验</i></a></p>
+
+        <hr style="background-color:#d58512; height:1px; border:none;">
+
+        <div class="exchan_img"  style="padding: 0rem 0.3rem;" th:utext="${data.getTextmsg()}">
+
+        </div>
+        <div class="article_type" style="height:5.2rem;text-align: center;margin-top: 0.6rem;background: white;" th:fragment="article_type">
+                <p class="mee_btn" id="draw" th:text="${isdraw}"></p>
+                <p style="font-size:0.3rem;padding-top: 0.2rem;"><a th:href="@{'drawUser?sid='+${sid}+'&index=2'}"  style="color: grey">已有<i id="drawCount" th:text="${participantCount}"/>人参加抽奖，查看全部></a></p>
+                    <tr th:each="user,userStat:${drawUser}" th:if="${userStat.index} lt 5" >
+                        <td><img  th:src="@{${user.getHeadUrl()}}"  style="width: 0.6rem;height:0.6rem;"/></td>
+                    </tr>
+                <p style="font-size:0.3rem;color: grey;">温馨提示：xxxxxxxxx</p>
+        </div>
+        <div class="exchan_img" >
+            <img th:src="@{'../'+${data.getSponsoric()}}">
+        </div>
+        <div style="margin-left: 0.4rem;margin-right: 0.4rem;display:none;" id="userText">
+            <p style="text-align: right;font-size: 0.35rem;color:#1E9FFF;">写留言</p>
+            <div style="border:3px solid;height:5rem;width: 100%;">
+                <div style="border:2px dashed;height:4.7rem;width: 98%;margin: 3px 3px 3px 3px">
+
+                </div>
+            </div>
+        </div>
+        <div class="advertise_img" >
+            <div class="imshar" id="aa"></div>
+            <img th:src="@{'../'+${data.getAdvertisepic()}}">
+        </div>
+            <div class="shadow-box" style="display:none;">
+                <div class="shadow">
+                    <div class="shadow-bg">
+                            <img src="" alt="" id="shareImg1">
+                    </div>
+                    <div style="width:200px;height:30px;position: absolute;font-size: 0.3rem; top: 110px;left: -63px;color: grey;" id="shareText"></div>
+
+                </div>
+            </div>
+
+        <div class="sha-box" style="display:none;">
+            <div class="sha">
+                <div class="sha-bg">
+                    <img src="" alt="" >
+                </div>
+            </div>
+        </div>
+</body>
+<script language='javascript' th:inline="javascript">
+
+    $('#share').on("click",function(){
+        $('.shadow-box').css({"display": "block"});
+        $.ajax({
+            url:"../draw/saveImage",
+            data:{
+                sid:[[${sid}]],
+                stime:(new Date()).getTime()
+            },
+            type:"post",
+            cache:false,
+            dataType:"json",
+            success:function(data){
+                if(data.status){
+                    $('#shareImg1').attr("src","../"+data.imgurl);
+                    $('#shareText').html("长按保存图片分享给好友");
+                }
+
+            },
+            error:function(){
+
+            }
+
+
+        })
+
+    })
+
+    $('.shadow-box:not(img)').on("click",function(){
+        $('.shadow-box').css({"display": "none"});
+
+    });
+    $('.shadow').on("click",function(){
+       return false;
+    });
+
+
+    $('#aa').on("click",function(){
+        const out_trade_no = [[${data.getAdvertiseurl()}]];
+        document.location.href = out_trade_no;
+
+    });
+
+    $('#draw').one("click",function(){
+        if( $('#draw').val!='已抽奖'){
+            $('.article_type').load("../draw/draw?sid="+[[${sid}]],function(response,status,xhr){
+
+                if(status=="success"){
+                    $('.mee_btn').css({"background": "grey"});
+                }
+            });
+
+        }
+
+
+    })
+
+    $(function() {
+        if ([[${isdraw}]] == '已抽奖'||[[${isdraw}]] == '已结束') {
+            $('.mee_btn').css({"background": "grey"});
+            $('#draw').css("pointer-events","none");
+        }
+        if ([[${isdraw}]] == '已结束') {
+            $('#userText').css({"display": "block"});
+
+        }
+        wx.config({
+            debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+            appId: [[${config.appid}]], // 必填，公众号的唯一标识
+            timestamp: [[${config.timestamp}]], // 必填，生成签名的时间戳
+            nonceStr: [[${config.nonceStr}]], // 必填，生成签名的随机串
+            signature: [[${config.signature}]],// 必填，签名，见附录1【必填：通过提供接口获取】
+            jsApiList: [
+                'checkJsApi'
+            ]
+        });
+        wx.ready(function () {
+            wx.hideOptionMenu();
+            /***隐藏分享菜单****/
+            wx.checkJsApi({
+                jsApiList: [
+                    'checkJsApi'
+                ],
+                success: function (res) {
+                }
+            });
+        });
+
+    });
+
+</script>
+</html>
+

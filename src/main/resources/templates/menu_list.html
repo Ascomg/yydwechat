@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>自定义菜单</title>
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
+    <link rel="stylesheet" href="../css/menu.css">
+    <script src="../js/vue.min.js"></script>
+    <script src="../js/jquery-1.9.0.js"></script>
+    <script src="../layui/layui.js"></script>
+    <script src="../js/common.js" type="text/javascript"></script>
+
+</head>
+<body>
+<div id="box">
+    <div class="container">
+
+        <div class="custom-menu-edit-con">
+            <div class="hbox">
+                <div class="inner-left">
+                    <div class="custom-menu-view-con">
+                        <div class="custom-menu-view">
+                            <div class="custom-menu-view__title">公众号名称</div>
+                            <div class="custom-menu-view__body">
+                                <div class="weixin-msg-list">
+                                    <ul class="msg-con"></ul>
+                                </div>
+                            </div>
+                            <div id="menuMain" class="custom-menu-view__footer">
+                                <div class="custom-menu-view__footer__left"></div>
+                                <div id="customBtns" class="custom-menu-view__footer__right">
+                                    <div class="custom-menu-view__menu" v-if="menuObj.button.length>0"
+                                         v-for="(item,index) in menuObj.button"
+                                         :class="{subbutton__actived:menuIndex[index].isActive}"
+                                         :style="{width:buttonWidth}">
+                                        <div class="text-ellipsis" @click="menuTab(index)">{{item.menuname}}</div>
+                                        <ul class="custom-menu-view__menu__sub">
+                                            <li v-for="(subItem,subIndex) in item.sub_button"
+                                                class="custom-menu-view__menu__sub__add"
+                                                :class="{subbutton__actived:subIndex==subBtnIndex[index].num}"
+                                                @click="liTab(index,subIndex)">
+                                                {{subItem.menuname}}
+                                            </li>
+                                            <li v-if="item.sub_button.length<5" @click="subAddBtn(index)">
+                                                <i class="glyphicon glyphicon-plus text-info"></i>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="custom-menu-view__menu" v-if="menuObj.button.length==0"
+                                         @click="addBtn(0)" style="width: 100%;">
+                                        <div class="text-ellipsis">
+                                            <i class="glyphicon glyphicon-plus text-info iBtn"></i>
+                                        </div>
+                                    </div>
+                                    <div class="custom-menu-view__menu" v-if="menuObj.button.length==1"
+                                         @click="addBtn(1)" style="width: 50%;">
+                                        <div class="text-ellipsis">
+                                            <i class="glyphicon glyphicon-plus text-info iBtn"></i>
+                                        </div>
+                                    </div>
+                                    <div class="custom-menu-view__menu" v-if="menuObj.button.length==2"
+                                         @click="addBtn(2)" style="width: 33.33%;">
+                                        <div class="text-ellipsis">
+                                            <i class="glyphicon glyphicon-plus text-info iBtn"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="inner-right">
+                    <div class="cm-edit-after">
+                        <div class="cm-edit-right-header b-b"><span>{{rightTitle}}</span> <a @click="del()"
+                                                                                             class="pull-right"
+                                                                                             href="javascript:;">删除菜单</a>
+                        </div>
+                        <form class="form-horizontal wrapper-md" name="custom_form">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">菜单名称:</label>
+                                <div class="col-sm-4">
+                                    <input name="custom_input_title" type="text" class="form-control"
+                                           v-model="rightTitle"
+                                           v-on:input="updateValue()"></div>
+                                <div class="col-sm-5 help-block">
+                                    <div v-show="isRightTitle">字数不超过5个汉字或16个字符</div>
+                                    <div v-show="rightTitle.length==0">菜单内容不能为空</div>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class="cm-edit-content-con" id="editPage" v-if="urlShow">
+                            <div class="cm-edit-page">
+                                <!-- <div class="row">
+                                  <label class="col-sm-9 control-label" style="text-align: left;">点击该菜单会跳转到以下链接:
+                                  </label>
+                                </div> -->
+                                <div class="row">
+                                    <label class="col-sm-3 control-label" style="text-align: left;">点击菜单:
+                                    </label>
+                                    <div class="col-sm-9">
+                                        <input type="radio" id="two" value="click" v-model="type"
+                                               v-on:change="updateType()">
+                                        <label for="two">回复消息</label>
+                                        <input type="radio" id="one" value="view" v-model="type"
+                                               v-on:change="updateType()">
+                                        <label for="one">跳转网页</label>
+                                        <input type="radio" id="three" value="miniprogram" v-model="type"
+                                               v-on:change="updateType()">
+                                        <label for="three">跳转小程序</label>
+                                    </div>
+                                </div>
+                                <div class="row" v-if="type=='click'">
+                                    <label class="col-sm-3 control-label" style="text-align: left;">关键字规则:
+                                    </label>
+                                    <div class="col-sm-9">
+                                        <select v-model="keyid" class="col-sm-6" v-on:change="updateKey()">
+                                            <option v-for="option in options" v-bind:value="option.combid">
+                                                {{ option.combtext }}
+                                            </option>
+                                        </select>
+
+                                    </div>
+
+                                </div>
+                                <div class="row" v-if="type=='miniprogram'">
+                                    <label class="col-sm-3 control-label" style="text-align: left;">页面地址:
+                                    </label>
+                                    <div class="col-sm-6">
+                                        <input type="text" name="url" id="texturl1" class="form-control"
+                                               v-model="url" v-on:input="updateUrl()" placeholder="认证号才可手动输入地址"
+                                               ref="texturl1">
+                                        <span class="help-block">必填,必须是正确的URL格式</span>
+                                    </div>
+                                </div>
+
+                                <div v-if="type=='view'">
+                                    <div class="row">
+                                        <label class="col-sm-3 control-label" style="text-align: left;">选择链接:
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <input type="radio" id="one2" value="select" v-model="urltype"
+                                                   v-on:change="setValue()">
+                                            <label for="one2">列表选择</label>
+
+                                            <input type="radio" id="two2" value="input" v-model="urltype"
+                                                   v-on:change="setValue()">
+                                            <label for="two2">手动输入</label>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="row" v-if="urltype=='select'">
+                                        <label class="col-sm-3 control-label" style="text-align: left;">页面地址:
+                                        </label>
+                                        <div class="col-sm-9">
+                                            <select v-model="url" name="url" id="selecturl" class="col-sm-6"
+                                                    v-on:change="updateUrl()">
+                                                <option v-for="option in options2" v-bind:value="option.combid">
+                                                    {{ option.combtext }}
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div class="row" v-if="urltype=='input'">
+                                        <label class="col-sm-3 control-label" style="text-align: left;">页面地址:
+                                        </label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="url" id="texturl" class="form-control"
+                                                   v-model="url" v-on:input="updateUrl()" placeholder="认证号才可手动输入地址"
+                                                   ref="texturl">
+                                            <span class="help-block" v-if="isUrl">必填,必须是正确的URL格式</span>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cm-edit-before" v-if="menuObj.button.length==0 || operationShow"><h5>点击左侧菜单进行操作</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="cm-edit-footer">
+            <button @click="save" type="button" class="btn btn-info1">仅保存</button>
+            <button @click="synchronize" type="button" class="btn btn-info1">同步到微信</button>
+        </div>
+    </div>
+</div>
+<script>
+    'use strict';
+    $(function () {
+        init();
+        initKeySelect();
+        getMenuUrl();
+
+        function init() {
+            $.ajax({
+                type: "GET",
+                url: "../menu/getmenu",
+                data: {},
+                success: function (data) {
+                    menulist.menuObj = data;
+                },
+                error: function () {
+                    alert("错误");
+                }
+            })
+
+        }
+
+        function getMenuUrl() { //获取数据
+
+            $.ajax({
+                type: "GET",
+                url: "../select/getUrlList",
+                data: {},
+                success: function (data) {
+                    menulist.options2 = data;
+                },
+                error: function () {
+                    alert("错误");
+                }
+
+            })
+
+        }
+
+
+        function initKeySelect() { //获取数据
+            $.ajax({
+                type: "GET",
+                url: "../select/getKeyList",
+                data: {},
+                success: function (data) {
+                    menulist.options = data;
+                },
+                error: function () {
+                    alert("错误");
+                }
+
+            })
+
+        }
+    });
+
+    var viewtype = "";
+    var url = "";
+
+    var menulist = new Vue({
+        el: '#box',
+        data: {
+            rightTitle: '',
+            url: '',
+            type: 'view',
+            urltype: 'select',
+            dataIndex: [0, 0, null],
+            operationShow: true,
+            urlShow: true,
+            isRightTitle: false,
+            isUrl: false,
+            keyid: '',
+            menuIndex: [
+                {isActive: false},
+                {isActive: false},
+                {isActive: false}
+            ],
+            subBtnIndex: [
+                {num: -1},
+                {num: -1},
+                {num: -1}
+            ],
+            menuObj: {"button": []},
+            buttonObj: {
+                "menuname": "新建菜单",
+                "url": "",
+                "sub_button": []
+            },
+            subObj: {
+                "type": "view",
+                "menuname": "新建子菜单",
+                "url": ""
+            }, options: [], options2: []
+        },
+        computed: {
+            buttonWidth: function () {
+                return this.menuObj.button.length == 3 ? '33.33%' : 100 / (this.menuObj.button.length + 1) + '%';
+            }
+        },
+        methods: {
+            del: function () {//删除菜单
+                let x = this.dataIndex[0];
+                let y = this.dataIndex[1];
+                let z = this.dataIndex[2];
+                z == 0 ? this.menuObj.button.splice(x, 1) : this.menuObj.button[x].sub_button.splice(y, 1);//判断删除一级菜单还是二级菜单
+                for (let i = 0; i < this.menuObj.button.length; i++) {
+                    this.subBtnIndex[i].num = -1;//重置所有子菜单选中状态
+                    this.menuIndex[i].isActive = false;//重置一级菜单
+                }
+                this.operationShow = true;//右侧隐藏操作框
+
+            },
+            addBtn: function (index) {//添加一级菜单
+                var button = this.menuObj.button;
+                button.splice(button.length, 0, JSON.parse(JSON.stringify(this.buttonObj)));//添加菜单按钮
+                for (let i = 0; i < this.menuObj.button.length; i++) {
+                    this.subBtnIndex[i].num = -1;//重置所有子菜单选中状态
+                    this.menuIndex[i].isActive = false;//重置一级菜单
+                }
+                this.menuIndex[index].isActive = true;
+                let menu_name = this.menuObj.button[index].menuname;
+                let menu_url = this.menuObj.button[index].url;
+                let menu_type = this.menuObj.button[index].type;
+                let menu_urltype = this.menuObj.button[index].urltype;
+                let menu_key = this.menuObj.button[index].keyid;
+                this.getInfo(menu_name, menu_url, menu_type, menu_urltype, menu_key);
+                this.urlWindow(index);
+                viewtype = "";
+                this.dataIndex.splice(0, 1, index);
+                this.dataIndex.splice(2, 1, 0);
+                this.operationShow = false;
+            },
+            subAddBtn: function (index) {//添加子菜单
+                for (let i = 0; i < this.menuObj.button.length; i++) {
+                    this.subBtnIndex[i].num = -1;//重置所有子菜单选中状态
+                    this.menuIndex[i].isActive = false;//重置一级菜单
+                    if (i == index) {
+                        var sub_button = this.menuObj.button[i].sub_button;
+                        sub_button.splice(this.menuObj.button[i].sub_button.length, 0, JSON.parse(JSON.stringify(this.subObj)));//添加子菜单按钮
+                        if (sub_button.length > 0) {
+                            this.subBtnIndex[index].num = sub_button.length - 2;
+                            this.menuObj.button[i].url = '';//增加子菜单，清空一级菜单url
+                        }
+                        this.subBtnIndex[index].num++;//子菜单选中状态
+                    }
+                }
+                let sub_name = this.menuObj.button[index].sub_button[this.subBtnIndex[index].num].menuname;
+                let sub_url = this.menuObj.button[index].sub_button[this.subBtnIndex[index].num].url;
+                let sub_type = this.menuObj.button[index].sub_button[this.subBtnIndex[index].num].type;
+                let sub_urltype = this.menuObj.button[index].sub_button[this.subBtnIndex[index].num].urltype;
+                let menu_key = this.menuObj.button[index].sub_button[this.subBtnIndex[index].num].keyid;
+                this.getInfo(sub_name, sub_url, sub_type, sub_urltype, menu_key);
+                this.urlWindow(index, true);
+                viewtype = "";
+                this.dataIndex.splice(0, 1, index);
+                this.dataIndex.splice(1, 1, this.subBtnIndex[index].num);
+                this.dataIndex.splice(2, 1, 1);
+                this.operationShow = false;
+            },
+            menuTab: function (index) {//点击一级菜单
+                for (let i = 0; i < this.menuObj.button.length; i++) {
+                    this.subBtnIndex[i].num = -1;//重置所有子菜单选中状态
+                    this.menuIndex[i].isActive = false;//重置一级菜单
+                }
+                this.menuIndex[index].isActive = true;
+                let menu_name = this.menuObj.button[index].menuname;
+                let menu_url = this.menuObj.button[index].url;
+                let menu_type = this.menuObj.button[index].type;
+                let menu_urltype = this.menuObj.button[index].urltype;
+                let menu_key = this.menuObj.button[index].keyid;
+                viewtype = menu_urltype;
+                url = menu_url;
+                this.getInfo(menu_name, menu_url, menu_type, menu_urltype, menu_key);
+                this.urlWindow(index);
+                this.dataIndex.splice(0, 1, index);
+                this.dataIndex.splice(2, 1, 0);
+                this.operationShow = false;
+            },
+            liTab: function (index, subIndex) {//点击子菜单
+                for (let i = 0; i < this.menuObj.button.length; i++) {
+                    this.subBtnIndex[i].num = -1;//重置所有子菜单选中状态
+                    this.menuIndex[i].isActive = false;//重置一级菜单
+                }
+                this.subBtnIndex[index].num = subIndex;
+                let sub_name = this.menuObj.button[index].sub_button[subIndex].menuname;
+                let sub_url = this.menuObj.button[index].sub_button[subIndex].url;
+                let sub_type = this.menuObj.button[index].sub_button[subIndex].type;
+                let sub_urltype = this.menuObj.button[index].sub_button[subIndex].urltype;
+                let menu_key = this.menuObj.button[index].sub_button[subIndex].keyid;
+                viewtype = sub_urltype;
+                url = sub_url;
+                this.getInfo(sub_name, sub_url, sub_type, sub_urltype, menu_key);
+                this.urlWindow(index, true);
+                this.dataIndex.splice(0, 1, index);
+                this.dataIndex.splice(1, 1, subIndex);
+                this.dataIndex.splice(2, 1, 1);
+                this.operationShow = false;
+            },
+            updateValue: function () {//更新按钮name
+                let match1 = /^[\u4E00-\u9FA5]{1,5}$/;
+                let isName1 = match1.test(this.rightTitle);
+                let match2 = /^[a-zA-Z0-9]{1,16}$/;
+                let isName2 = match2.test(this.rightTitle);
+
+                let x = this.dataIndex[0];
+                let y = this.dataIndex[1];
+                let z = this.dataIndex[2];
+                isName1 || isName2 ? this.isRightTitle = false : this.isRightTitle = true;
+                z == 0 ? this.setmenu(x) : this.setSubmenu(x, y);
+            },
+            updateUrl: function () {//更新按钮url
+                let match = /^((ht|f)tps?):\/\/[\w\-]+(\.[\w\-]+)+([\w\-\.,@?^=%&:\/~\+#]*[\w\-\@?^=%&\/~\+#])?$/;//验证url
+                let isUrl = match.test(this.url);
+                let x = this.dataIndex[0];
+                let y = this.dataIndex[1];
+                let z = this.dataIndex[2];
+                isUrl ? this.isUrl = false : this.isUrl = true;
+                viewtype = "";
+                z == 0 ? this.setmenu(x) : this.setSubmenu(x, y);
+            },
+            updateType: function () {//更新按钮name
+                let x = this.dataIndex[0];
+                let y = this.dataIndex[1];
+                let z = this.dataIndex[2];
+                z == 0 ? this.setmenu(x) : this.setSubmenu(x, y);
+            },
+            updateKey: function () {//更新按钮name
+                let x = this.dataIndex[0];
+                let y = this.dataIndex[1];
+                let z = this.dataIndex[2];
+                z == 0 ? this.setmenu(x) : this.setSubmenu(x, y);
+            },
+            setValue: function () {
+                let x = this.dataIndex[0];
+                let y = this.dataIndex[1];
+                let z = this.dataIndex[2];
+                z == 0 ? this.setmenu(x) : this.setSubmenu(x, y);
+            },
+            getInfo: function (name, url, type, urltype, keyid) {//显示name，url
+                this.rightTitle = name;
+                this.url = url;
+                this.type = type;
+                this.keyid = keyid;
+                this.urltype = urltype;
+                /* if(type == "click"){
+                    this.urlType = "click";
+                } */
+            },
+            setmenu: function (x) {
+                this.menuObj.button[x].menuname = JSON.parse(JSON.stringify(this.rightTitle));//必须用JSON.parse(JSON.stringify(value)
+
+                if (viewtype == "select") {
+                    if (this.urltype == "input") {
+                        url = this.url;
+                        this.url = "";
+                    } else {
+                        this.url = url;
+                    }
+                } else if (viewtype == "input") {
+                    if (this.urltype == "select") {
+                        url = this.url;
+                        this.url = "";
+                    } else {
+                        this.url = url;
+                    }
+                }
+                this.menuObj.button[x].url = JSON.parse(JSON.stringify(this.url));
+                if (this.type == "view") {
+                    this.menuObj.button[x].urltype = JSON.parse(JSON.stringify(this.urltype));
+                }
+                /* if(this.urlType == "click"){
+                    this.type = "click";
+                } */
+                this.menuObj.button[x].type = JSON.parse(JSON.stringify(this.type));
+                this.menuObj.button[x].keyid = JSON.parse(JSON.stringify(this.keyid));
+            },
+            setSubmenu: function (x, y) {
+                this.menuObj.button[x].sub_button[y].menuname = JSON.parse(JSON.stringify(this.rightTitle));
+                if (viewtype == "select") {
+                    if (this.urltype == "input") {
+                        url = this.url;
+                        this.url = "";
+                    } else {
+                        this.url = url;
+                    }
+                } else if (viewtype == "input") {
+                    if (this.urltype == "select") {
+                        url = this.url;
+                        this.url = "";
+                    } else {
+                        this.url = url;
+                    }
+                }
+                this.menuObj.button[x].sub_button[y].url = JSON.parse(JSON.stringify(this.url));
+                if (this.type == "view") {
+                    this.menuObj.button[x].sub_button[y].urltype = JSON.parse(JSON.stringify(this.urltype));
+                }
+                /* if(this.urlType == "click"){
+                    this.type = "click";
+                } */
+                this.menuObj.button[x].sub_button[y].type = JSON.parse(JSON.stringify(this.type));
+                this.menuObj.button[x].sub_button[y].keyid = JSON.parse(JSON.stringify(this.keyid));
+            },
+            urlWindow: function (index, subIndex) {//显示右侧url窗口
+                if (!subIndex && this.menuObj.button[index].sub_button.length > 0) {
+                    this.urlShow = false;
+                } else {
+                    this.urlShow = true;
+                }
+            },
+            save: function () {
+                let button = this.menuObj.button;
+                for (let i = 0; i < button.length; i++) {//验证url是否为空
+                    if (button[i].sub_button.length == 0) {
+                        if (button[i].type == "click") {
+                            if (button[i].keyid == null) {
+                                alert('一级菜单关键词内容不能为空');
+                                return;
+                            }
+                        } else {
+                            if (button[i].url == '' || button[i].menuname == '') {
+                                alert('一级菜单url内容不能为空');
+                                return;
+                            }
+                        }
+                    } else {
+                        for (let j = 0; j < button[i].sub_button.length; j++) {
+                            if (button[i].sub_button[j].type == 'click') {
+                                if (button[i].sub_button[j].keyid == null) {
+                                    alert('二级菜单关键词内容不能为空');
+                                    return;
+                                }
+
+                            } else {
+                                if (button[i].sub_button[j].url == '' || button[i].sub_button[j].menuname == '') {
+                                    alert('二级菜单url和名称内容不能为空');
+                                    return;
+                                }
+                            }
+
+
+                        }
+                    }
+                }
+
+
+//                 $.ajax({
+//                     type : "POST",
+//                     url : "add",
+//                     contentType: 'application/json',
+//                     data : {
+//                     	menu :JSON.stringify(button),
+//         	   			menu_id:GetArgsFromHref("menu_id"),
+//         	   			stime : (new Date()).getTime()
+//                     },
+//                     success : function(data) {
+// 　　　　　　　　　　　　　　  		 alert(data.message);
+//                     },
+//                     error : function(){
+//                         alert("错误");
+//                     }
+//
+//                 })
+
+                // $.ajax({
+                //   type : "POST",
+                //   url : "add",
+                //   dataType:"json",
+                //   contentType: 'application/json',
+                //   data : {
+                //     menu :JSON.stringify(button),
+                //     menu_id:GetArgsFromHref("menu_id"),
+                //     stime : (new Date()).getTime()
+                //   },
+                //   success : function(data) {
+                //     alert(data.message);
+                //   },
+                //   error : function(){
+                //     alert("错误");
+                //   }
+                //
+                // })
+                console.log(button)
+                // $.ajax({
+                //     type: "POST",
+                //     url: "add",
+                //     dataType: "json",
+                //     // contentType: 'application/json',
+                //     data: {
+                //         "sid": "dsd"
+                //         // menu :JSON.stringify(button),
+                //         // menu_id:GetArgsFromHref("menu_id"),
+                //         // stime : (new Date()).getTime()
+                //     },
+                //     success: function (data) {
+                //         alert(data.message);
+                //     },
+                //     error: function () {
+                //         alert("错误");
+                //     }
+                //
+                // })
+                $.ajax({
+                    type: "post",
+                    url: "add",
+                    data: JSON.stringify(button),
+                    dataType: "json",
+                  contentType:"application/json",
+                  success: function (data) {
+                        console.log(data);
+                    }
+                });
+
+            },
+
+            synchronize: function () {
+                let button = this.menuObj.button;
+                for (let i = 0; i < button.length; i++) {//验证url是否为空
+                    if (button[i].sub_button.length == 0) {
+                        if (button[i].type == "click") {
+                            if (button[i].keyid == null) {
+                                alert('一级菜单关键词内容不能为空');
+                                return;
+                            }
+                        } else {
+                            if (button[i].url == '' || button[i].menuname == '') {
+                                alert('一级菜单url内容不能为空');
+                                return;
+                            }
+                        }
+                    } else {
+                        for (let j = 0; j < button[i].sub_button.length; j++) {
+                            if (button[i].sub_button[j].type == 'click') {
+                                if (button[i].sub_button[j].keyid == null) {
+                                    alert('二级菜单关键词内容不能为空');
+                                    return;
+                                }
+                            } else {
+                                if (button[i].sub_button[j].url == '' || button[i].sub_button[j].menuname == '') {
+                                    alert('二级菜单url和名称内容不能为空');
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+                //console.log(JSON.stringify(button));
+                $.ajax({
+                    type: "POST",
+                    url: "../menu/sameMenu",
+                    data: {
+                        parms: JSON.stringify(button),
+                        menu_id: GetArgsFromHref("menu_id"),
+                        stime: (new Date()).getTime()
+                    },
+                    success: function (data) {
+                        if (data.status) {
+                            alert(data.message);
+                        } else {
+                            alert(data.message);
+                        }
+
+                    },
+                    error: function () {
+                        alert("错误");
+                    }
+
+                })
+
+            }
+
+        }
+    })
+
+
+</script>
+</body>
+</html>
+
+
+
+
+

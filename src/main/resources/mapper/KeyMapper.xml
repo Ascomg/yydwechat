@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+        <mapper namespace="com.yuyuedao.yydwechat.mapper.KeyMapper">
+
+        <select id="selectAll" resultType="com.yuyuedao.yydwechat.entity.W_p_key">
+                SELECT sid,keyword,case when type='news' then '图文消息' else '文本消息' end  type,createtime
+                from w_p_key
+                <where>
+                        <if test="keyword != null and keyword != ''">
+                             <bind name="keyword" value=" '%' + keyword + '%' "></bind>
+                                keyword like #{keyword}
+                        </if>
+
+                </where>
+                order by sid desc
+
+        </select>
+
+        <insert id="add" parameterType="com.yuyuedao.yydwechat.entity.W_p_key">
+            insert into w_p_key(type,keyword,accountId,textMsg,createTime,newSid,posterActivityId,drawActivityId) values(#{type},#{keyword},#{accountId},#{textMsg},getdate(),#{newSid},#{posterActivityId},#{drawActivityId})
+
+        </insert>
+
+        <select id="checkName" resultType="java.lang.Integer" >
+                select count(*) from w_p_key
+                <where>
+                    <if test="keyword != null and keyword != '' ">
+                            <if test="type=='add'">
+                                    keyword =#{keyword}
+                            </if>
+                            <if test="type=='update' and sid != null and sid != '' ">
+                                    keyword =#{keyword} and sid != #{sid}
+                            </if>
+
+                    </if>
+                        
+                </where>
+        </select>
+
+
+        <select id="checkKey" resultType="java.lang.Integer" >
+                select count(*) from w_p_key
+                <where>
+                        <if test="keyword != null and keyword != '' ">
+                                <if test="sid != null and sid != ''">
+                                        keyword =#{keyword} and accountId=#{accountId}
+                                </if>
+                                <if test=" sid == null or sid == '' ">
+                                        keyword =#{keyword} and sid != #{sid} and accountId=#{accountId}
+                                </if>
+
+                        </if>
+
+                </where>
+        </select>
+
+        <select id="getNewsId" resultType="java.lang.String" >
+                <if test="sid != null and sid != ''">
+                     select  newsid from w_p_key where sid=#{sid}
+                </if>
+                <if test="sid == null or sid == ''">
+                    select newid()
+                </if>
+
+        </select>
+        
+        <update id="updateInfo" parameterType="com.yuyuedao.yydwechat.entity.W_p_key">
+                <if test="newSid != null and newSid != ''">
+                    update w_p_key set newsid=#{newSid} where accountId=#{accountId} and type=#{type}
+                </if>
+                <if test="newSid == null or newSid == ''">
+                    update w_p_key set newsid=null where accountId=#{accountId} and type=#{type}
+                </if>
+        </update>
+
+
+        <delete id="delete" parameterType="java.lang.Integer">
+            delete from w_p_key where sid=#{sid}
+
+        </delete>
+
+
+        <select id="getById" resultType="com.yuyuedao.yydwechat.entity.W_p_key">
+                SELECT sid,keyword,type,createtime,newSid,posterActivityId,drawActivityId
+                from w_p_key
+                <where>
+                        <if test="sid != null and sid != ''">
+                                sid=#{sid}
+                        </if>
+
+                </where>
+
+        </select>
+
+        <select id="getByKey" resultType="com.yuyuedao.yydwechat.entity.W_p_key">
+                SELECT sid,keyword,type,createtime,newSid,textMsg,posterActivityId,drawActivityId
+                from w_p_key
+                <where>
+                        <if test="accountid != null and accountid != ''">
+                               and accountid= #{accountid}
+                        </if>
+                        <if test="content != null and content != ''">
+                                <bind name="content" value=" '%' + content + '%' "></bind>
+                               and  keyword like #{content}
+                        </if>
+
+
+                </where>
+
+        </select>
+
+
+        
+
+        </mapper>

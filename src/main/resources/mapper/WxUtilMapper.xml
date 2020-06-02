@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+        <mapper namespace="com.yuyuedao.yydwechat.mapper.WxUtilMapper">
+
+        <select id="getAccountInfo" resultType="com.yuyuedao.yydwechat.entity.A_account">
+                select  authorizer_appid,head_img,authorizer_access_token,authorizer_refresh_token,accountid,authorizer_token_time,jsticket_time,api_ticket
+                from a_account
+                <where>
+                        <if test="accountId != null and accountId != '' ">
+                            accountId=#{accountId}
+
+                        </if>
+                </where>
+
+        </select>
+
+        <update id="updateAccount" parameterType="com.yuyuedao.yydwechat.entity.A_account">
+                update  a_account set authorizer_appid=#{authorizer_appid},authorizer_refresh_token=#{authorizer_refresh_token},authorizer_token_time=getdate()
+                <where>
+                        <if test="accountId != null and accountId != '' ">
+                                accountId=#{accountId}
+
+                        </if>
+
+                </where>
+        </update>
+
+        <update id="updateA" parameterType="com.yuyuedao.yydwechat.entity.A_account">
+                update  a_account set jsapi_ticket=#{jsapi_ticket},Jsticket_time=getDate()
+                <where>
+                        <if test="accountId != null and accountId != '' ">
+                                accountId=#{accountId}
+
+                        </if>
+
+                </where>
+        </update>
+
+        <select id="selectArgs" resultType="com.yuyuedao.yydwechat.entity.Auth_args" >
+            select auth_token,component_appid,auth_ticket,AUTH_TOKEN_TIME
+            from auth_args
+        </select>
+
+
+        <update id="updateAgrs" parameterType="com.yuyuedao.yydwechat.entity.Auth_args">
+                update  auth_args set auth_token=#{auth_token},AUTH_TOKEN_TIME=getdate()
+                <where>
+                        <if test="component_appid != null and component_appid != '' ">
+                                component_appid=#{component_appid}
+
+                        </if>
+
+                </where>
+        </update>
+
+
+
+</mapper>

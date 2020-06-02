@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+        <mapper namespace="com.yuyuedao.yydwechat.mapper.UserinfoMapper">
+
+
+        <insert id="insert" parameterType="com.yuyuedao.yydwechat.entity.X_userinfo">
+        insert into book (uid, name, phone,
+        pwd)
+        values (#{uid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR},
+        #{pwd,jdbcType=DOUBLE})
+        </insert>
+
+        <select id="selectAll" resultType="com.yuyuedao.yydwechat.entity.X_userinfo">
+        select uid, name, phone, pwd,
+        from userinfo
+        </select>
+
+        <select id="getById" resultType="com.yuyuedao.yydwechat.entity.X_userinfo">
+        select uid, name, phone, pwd
+        from userinfo
+        WHERE uid = #{uid}
+        </select>
+
+        <select id="getCount" resultType="java.lang.Integer">
+        select count(*)
+        from userinfo
+        </select>
+
+        <select id="getByNamepwd" resultType="com.yuyuedao.yydwechat.entity.X_userinfo">
+        select sid, user_id,user_name,accountId
+        from x_userinfo
+        WHERE user_id = #{name} and user_pwd= #{pwd}
+        </select>
+        </mapper>

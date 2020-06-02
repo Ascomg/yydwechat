@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>关注回复</title>
+	<meta name="keywords" content="keyword1,keyword2,keyword3">
+    <meta name="description" content="this is my page">
+    <meta name="content-type" content="text/html; charset=UTF-8">
+    <link href="../layui/css/layui.css" rel="stylesheet" />
+    <link href="..css/style.css" rel="stylesheet" />
+    <script src="../layui/layui.js"></script>
+    <script src="../js/jquery-1.9.0.js"></script>
+    <script src="../js/common.js" type="text/javascript"></script>
+    
+</head> 
+ <body>
+<div class="layui-tab">
+  <ul class="layui-tab-title">
+    <li class="layui-this">文本回复</li>
+    <li>图片回复</li>
+    <li>图文回复</li>
+   
+  </ul>
+  <div class="layui-tab-content" style="height: 620px;">
+	    <div class="layui-tab-item layui-show"> 
+		    <form class="layui-form"  >
+		    <input type="hidden" value="关注回复" name="stype"/>
+		    <input type="hidden" value="text" name="type"/>
+		    <input type="hidden"  class="sid" name="sid" id="sid" />
+		    	<div class="layui-form-item layui-form-text">
+			   		<label class="layui-form-label">文本内容</label>
+				    <div class="layui-input-block">
+				      <textarea placeholder="请输入内容"  id="textmsg" name="textmsg" style="height: 240px;" class="layui-textarea"></textarea>
+				    </div>
+			  	</div>
+			  	<div class="layui-form-item">
+		    	<div class="layui-input-block">
+				      <button class="layui-btn" lay-submit lay-filter="formDemo">保存</button>
+				      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+		    	</div>
+		  	</div>
+		    </form>
+    	</div>
+     <div class="layui-tab-item"> 
+	    <form class="layui-form"  >
+	    <input type="hidden" value="1" name="stype"/>
+	     <input type="hidden" value="image" name="type"/>
+	    <input type="hidden"   class="sid" name="sid" id="sid" />
+	    	
+			<div class="layui-form-item">
+		      <label class="layui-form-label" style="width:100px;">回复图片</label>
+		      <div class="layui-input-inline">
+		        <button type="button" class="layui-btn  layui-btn-sm" id="big">上传图片</button>
+		        <button type="button" class="layui-btn layui-btn-sm  layui-btn-disabled deletebig" id="delbig"  disabled="disabled">删除图片</button>
+		        <input type="hidden" name="imgurl" id="imgurl" lay-verify="required"  class="layui-input"> 
+		          <div class="layui-upload-list">
+		    		<img class="layui-upload-img" id="bigp" style="width:240px;height:320px;">
+		   		</div>	 
+		      </div>
+			 </div>
+		  	<div class="layui-form-item">
+	    	<div class="layui-input-block">
+			      <button class="layui-btn" lay-submit lay-filter="formDemo">保存</button>
+			      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+	    	</div>
+	  	</div>
+	    </form>
+    </div>
+    <div class="layui-tab-item">
+	     <div class="layui-container"  >
+				    <div class="tw_left">
+					<div class="tw_box">
+						<div class="tw_list tw_banner">
+							
+						</div>
+					
+					</div>
+					<!-- 点击追加 -->
+					<div class="tw_add">+</div>
+				</div>
+				
+				<!-- 右侧选择内容 -->
+				<div class="wz_nrbox " >
+					<div class="wz_nr">
+					<h3 class="wz_nrtitle">当前关联的功能和素材</h3>
+						<ul class="wz_ul">
+						
+						</ul>
+					</div>
+					<div style="float: left;padding-left: 15px;padding-top: 20px;">
+					   <button class="layui-btn" id="listsave">保存</button>
+			    	</div>
+				</div>
+				
+	    </div>
+   
+    </div>
+  </div>
+</div>
+<script>
+layui.use(['form','element','upload','layer'], function(){
+	  var $ = layui.jquery,form=layui.form,upload = layui.upload,element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
+	  layer=layui.layer;
+	  getData();
+	  getNewsList();
+	  function getData(){
+		  $.ajax({
+			  url : "../textmsg/getbyidmrhf?type=1",// 跳转到 action
+			  type : "get",
+	  		  cache : false,
+	  		  dataType : "json",
+	  		  success : function(data) {
+		  			if (data.status) {
+		  				const  msg=data.data;
+		  				$("#textmsg").val(msg.textMsg);
+		  				$(".sid").val(msg.sid);
+		  				var list=msg.list;
+		  				var add_nr="";
+		  				$("#imgurl").val(msg.imgurl);
+		  				$("#bigp").attr("src","../"+msg.imgurl);
+		  				$("#delbig").removeClass("layui-btn-disabled");
+		        	 	$("#delbig").addClass("layui-btn-danger");
+		        	    $("#delbig").attr("disabled",false);
+		        	    $("#big").attr("disabled",true);
+		        	    $("#big").addClass("layui-btn-disabled");
+		  				$(".tw_box").html('<div class="tw_list tw_banner"></div>');
+		  				for(var i in list){
+		  				 	if(i==0){
+		  						var add1="<h3 class='data-li' data-id='"+list[i].sid+"' >"+list[i].title+"</h3><img class='max_img' src='../"+list[i].imgurl+"' style='display:block;' >"
+								+"<img class='min_img' src='../"+list[i].smallPic+"' style='display:none;' >"+
+								"<div class='tw_zzc' onclick='remo($(this));'>删除</div>";
+								
+								$(".tw_banner").append(add1);
+		  					}else{
+		  						add_nr+="<div class='tw_list' value='"+i+"'> "+
+			  					"<h3 class='data-li' data-id='"+list[i].sid+"' >"+list[i].title+"</h3><img class='max_img' src='../"+list[i].imgurl+"' >"
+								+"<img class='min_img' src='../"+list[i].smallPic+"' >"+
+								"<div class='tw_zzc' onclick='remo($(this));'>删除</div>"+
+								"</div>";
+		  					} 
+		  				
+		  				}
+		  				
+						$(".tw_box").append(add_nr);
+		  			}
+		  		},
+		  		error : function() {
+		  			layer.msg("网络操作请求失败");
+		  		}
+		  })
+		  
+	  }
+	  
+	  form.on('submit(formDemo)', function (data) {
+		$.ajax({
+	  		url : "../textmsg/save",// 跳转到 action
+	  		data :data.field,
+	  		type : "post",
+	  		cache : false,
+	  		dataType : "json",
+	  		success : function(data) {
+	  			if (data.status) {
+	  				layer.msg('保存成功！', { icon: 6 });
+	  				getData();
+	  			} else {
+	  				layer.msg(data.message, { icon: 5 });
+	  				
+	  			}
+	  		},
+	  		error : function() {
+	  			layer.msg("网络操作请求失败");
+	  		}
+	  	});
+	
+	      return false;
+	  });
+		
+	  function getNewsList(){
+		  $.ajax({
+			  url : "../news/getNewsList",// 跳转到 action
+			  type : "get",
+		  		cache : false,
+		  		dataType : "json",
+		  		success : function(data) {
+		  			if (data.status) {
+		  			
+		  				var list=data.code;	
+		  				var str="";
+		  				for(var i in list){
+		  					str+="<li ><h3 class='data-li' data-id='"+list[i].sid+"' >"+list[i].title+"</h3><img class='max_img' src='../"+list[i].imgurl+"' >"
+							+"<img class='min_img' src='../"+list[i].smallpic+"' >"
+							+"<div class='tw_zzc' onclick='remo($(this));'>删除</div></li>";
+		  				}
+		  				$(".wz_ul").append(str);
+		  				max_img();
+		  			}
+		  		},
+		  		error : function() {
+		  			layer.msg("网络操作请求失败");
+		  		}
+		  })
+	  }
+  
+	$("#listsave").click(function(){
+		var sum=$(".tw_list .data-li").size();
+				str="";
+			$.each($(".tw_list .data-li"),function(index){
+				str+=$(this).attr("data-id")+"-";
+			});
+			str+="关注回复";
+			$.ajax({
+				  url : "news/saveNews.do",// 跳转到 action  
+				  type : "post",
+				  data:{
+					   parms:str,
+					   field:$("#sid").val(),
+					   menu_id:GetArgsFromHref("menu_id")
+					   },
+			  		cache : false,
+			  		dataType : "json",
+			  		success : function(data) {
+			  			if (data.status) {
+			  				layer.msg(data.message);
+			  			
+			  			}else{
+			  				layer.msg(data.message);
+			  			}
+			  		},
+			  		error : function() {
+			  			layer.msg("网络操作请求失败");
+			  		}
+			  })
+		/* } */ 
+	});
+	
+	
+		max_img();
+		var n=0;
+		// 点击追加
+		$(".tw_add").click(function(){
+			n=n+1;
+			var sum=$(".tw_list").size();
+			if(sum<8){
+				var add_nr='<div class="tw_list" value="'+n+'"> '+
+				'<div class="tw_zzc" onclick="remo($(this));">删除</div>'+
+				'</div>';
+				$(".tw_box").append(add_nr);
+			}
+		})
+		// 左侧选中
+		$(".tw_box").on('click','.tw_list',function(){
+			$(this).addClass("tw_active").siblings(".tw_list").removeClass("tw_active");
+			$(this).find(".tw_zzc").show().parents(".tw_list").siblings(".tw_list").find(".tw_zzc").hide();
+			
+		})
+
+		$(".wz_ul").delegate(" li","click",function(){
+			var wz_name=$(this).html();
+			$(".tw_active").html(wz_name);
+			max_img();
+		})
+
+		// 右侧选中效果
+		$(".wz_ul").delegate(" li","click",function(){
+			$(this).addClass("wz_active").siblings("li").removeClass("wz_active");
+		})
+		  
+		  //普通图片上传
+		  var uploadInst = upload.render({
+		      elem: '#big'
+		     ,url: 'news/uploadold.do?saveDir=gzhfimg'
+		     ,before: function(obj){
+		      //预读本地文件示例，不支持ie8
+		      obj.preview(function(index, file, result){
+		    	$('#bigp').css("display","");
+		        $('#bigp').attr('src', result); //图片链接（base64）
+		      });
+		    }
+		    ,done: function(res){
+		      if(!res.status){
+		        return layer.msg('上传失败');
+		      }else{
+		    	  $("#delbig").removeClass("layui-btn-disabled");
+		      	  $("#delbig").addClass("layui-btn-danger");
+		      	  $("#delbig").attr("disabled",false);
+		      	  $("#big").attr("disabled",true);
+		      	  $("#big").addClass("layui-btn-disabled");
+		    	  $("#imgurl").val(res.newName);
+		    	  layer.msg('上传成功');
+		      }
+		    }
+		  });
+		
+		 $("form").on("click",".deletebig",function(obj){
+			 var $delimg=$(this);
+			   
+			 	$.ajax({
+					url : "../zjd/deletefile.do",// 跳转到 action    
+					data : {
+						srch_nr : $(this).siblings("#imgurl").val(),
+						stime : (new Date()).getTime()
+					},
+					type : "post",
+					cache : false,
+					success : function(data) {
+						if (data == "success") {
+							 $delimg.removeClass("layui-btn-danger");
+							 $delimg.addClass("layui-btn-disabled");
+							 $delimg.siblings("#imgurl").val("");
+							 $delimg.siblings("div").find("#bigp").attr('src',"");
+							 $delimg.siblings("#big").removeClass("layui-btn-disabled");
+							 $delimg.siblings("#big").attr("disabled", false);
+							layer.msg("删除成功");
+						} else {
+							layer.msg(data.message);
+						}
+					},
+					error : function() {
+						layer.msg("网络操作请求失败!");
+					}
+
+				})
+			});
+	  
+
+
+		
+
+});
+
+	//第一张显示大图
+	function max_img(){
+		var element=$(".tw_list").eq(0);
+		element.find(".max_img").show().siblings(".min_img").hide();
+		
+	}
+	//删除
+	function remo(i){
+		var sum=$(".tw_list").size();
+		if(sum>0){
+			i.parents(".tw_list").remove();
+		}
+		max_img();
+	}
+</script>
+  </body>
+</html>

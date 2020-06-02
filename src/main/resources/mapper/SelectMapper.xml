@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+        <mapper namespace="com.yuyuedao.yydwechat.mapper.SelectMapper">
+
+        <select id="getUrlList" resultType="com.yuyuedao.yydwechat.util.SelectItem">
+                select  url combid,sname combtext from w_p_menu_url
+
+        </select>
+
+
+
+        <select id="getKeyList" resultType="com.yuyuedao.yydwechat.util.SelectItem">
+                select  sid combid,keyword combtext from w_p_key
+
+        </select>
+
+
+        <select id="getQuestion" resultType="com.yuyuedao.yydwechat.util.SelectItem">
+                select  sid combid,sname combtext from poster_questions
+
+        </select>
+
+        <select id="getPoster" resultType="com.yuyuedao.yydwechat.util.SelectItem">
+                select  sid combid,sname combtext from poster
+
+        </select>
+
+        <select id="getPosterActivity" resultType="com.yuyuedao.yydwechat.util.SelectItem">
+                select  sid combid,sname combtext from poster_activity
+
+        </select>
+
+
+
+
+        </mapper>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="email=no">
+    <script type="text/javascript"  src="../js/jquery1.10.2.min.js"></script>
+    <title>&nbsp;</title>
+    <script>
+        (function(win,doc){
+            var fresh = function() {
+                var html = doc.documentElement;
+                var w = html.clientWidth;
+                html.style.fontSize = (w/10) + 'px';
+            }
+            if(document.readyState === "complete") {
+                fresh();
+            } else {
+                document.addEventListener( "DOMContentLoaded", fresh, false );
+            }
+            win.addEventListener('resize' , fresh , false);
+        })(window,document)
+
+    </script>
+    <style type="text/css">
+        *{
+            margin: 0;
+            padding: 0;
+            font-family: "微软雅黑";
+        }
+        .new_box{
+            padding:0.5rem 0.2rem;
+        }
+        .new_title h3{
+            font-size: 0.65rem;
+            font-weight: normal;
+        }
+        .new_time{
+            color: #999;
+            font-size: 0.4rem;
+            margin-top: 0.3rem;
+        }
+        .new_text{
+            font-size: 0.45rem;
+            margin-top: 0.5rem;
+        }
+        .new_text img{
+            width: 100%;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="new_box">
+    <div class="new_title">
+        <h3 id="title" th:text="${data.getTitle()}"></h3>
+    </div>
+    <div class="new_time">
+        <p id="post-date" th:text="${#dates.format(data.getOpDate(), 'yyyy.MM.dd ')}"></p>
+    </div>
+
+    <div class="new_text" id="js_content"  th:text="${data.getContent()}">
+
+    </div>
+</div>
+
+</body>
+</html>

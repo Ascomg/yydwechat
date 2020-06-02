@@ -1,0 +1,153 @@
+*{
+	margin: 0;
+	padding: 0;
+}
+li{
+	list-style: none;
+}
+a{
+	text-decoration: none;
+	color: black;
+	-webkit-tap-highlight-color:transparent;
+}
+textarea{
+	border: 0;
+	resize:none;
+	outline: none;
+}
+input,select,option{ 
+	outline:none;/*外部边框清除*/
+	border: 0;
+	background: transparent;
+}
+a img{
+	border:0;/*清除IE带有链接图片多余边框*/
+}
+h1,h2,h3,h4,h5,h6,b{
+	font-weight: normal;
+}
+i{ 
+	font-style:normal;
+}
+/*全局样式设定*/
+body{ 
+	font-family:"微软雅黑";
+	color:#000;
+}
+.clearFloat{ 
+	zoom:1;/*针对IE6,IE7*/
+}
+.clearFloat:after{ 
+	display:block;
+	height:0;
+	font-size:0;
+	overflow:hidden;
+	clear:both;
+
+	}
+.fl{
+	 float:left;
+	}
+.fr{ 
+	float:right;
+}
+.center{
+	width:1200px;
+	min-width: 1200px;
+	margin: 0 auto;
+	overflow: hidden;
+	margin-top: 80px;
+}
+
+
+.reg_top{
+	border-bottom: 1px solid #dcdcdc;
+	padding: 10px 0;
+}
+.reg_logo{
+	width: 206px;
+	height: 52px;
+	margin-left: 53px;
+}
+.reg_left,.reg_right{
+	width: 50%;
+}
+.reg_left img{
+	width: 65%;
+	float: right;
+	margin-right: 50px;
+	margin-top: 20px;
+}
+.reg_form,.reg_form1{
+	width: 60%;
+	border: 1px solid #dcdcdc;
+	background: white;
+	border-radius: 5px;
+	margin-left: 50px;
+	position: relative;
+	padding: 20px 0 50px;
+	text-align: center;
+}
+.reg_form input,.reg_form1 input{
+	width: 75%;
+	height: 40px;
+	margin: 20px auto;
+	display: block;
+	border: 1px solid #e5e5e5;
+	border-radius: 2px;
+	text-indent: 3em;
+	font-size: 14px;
+}
+.reg_form1 img{
+	position: absolute;
+	left: 60px;
+	margin-top: 10px;
+}
+.reg_yzm{
+	width: 56% !important;
+	display: inline-block;
+	margin: 0 !important;
+	text-indent: 1em !important;
+
+}
+.reg_yzmnum{
+	width: 36%;
+	height: 40px;
+	background: white;
+	margin-left: 6.2%;
+	border-radius: 2px;
+	border: 1px solid #e5e5e5;
+}
+
+
+.reg_max{
+	width: 75%;
+	margin: 0 auto;
+	overflow: hidden;
+}
+.reg_btn{
+	width: 75%;
+	background: #23d2e1;
+	color: white;
+	border-radius: 2px;
+	border: 0;
+	padding: 10px 0;
+	margin-top: 20px;
+}
+.reg_btn2{
+	width: 75%;
+	background: #23d2e1;
+	color: white;
+	border-radius: 2px;
+	border: 0;
+	padding: 10px 0;
+	margin-top: 50px;
+}
+.reg_title{
+	width: 80px;
+	height: 80px;
+	line-height: 80px;
+	margin: 0px auto;
+	background: url("../images/titlebg.png") no-repeat;
+	background-size: contain;
+}

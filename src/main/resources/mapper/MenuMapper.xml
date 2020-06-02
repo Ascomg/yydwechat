@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+        <mapper namespace="com.yuyuedao.yydwechat.mapper.MenuMapper">
+
+        <select id="selectFirst" resultType="com.yuyuedao.yydwechat.entity.Menu">
+        select menu_id,menu_sname,menu_module,menu_file,menu_icon
+        from menu where menu_type=1 and menu_flag=1 order by menu_id
+        </select>
+
+        <select id="selectAll" resultType="com.yuyuedao.yydwechat.entity.Menu">
+        select menu_id,menu_sname,menu_module,menu_file,menu_icon
+        from menu  where menu_type=2 and menu_flag=1
+        </select>
+
+
+        <select id="showMenu" resultType="java.lang.String">
+        select menu_file
+        from menu where menu_id=#{menuId}
+        </select>
+
+        <select id="showPage" resultType="java.lang.String">
+        select url
+        from menu_button
+        <where>
+            <if test="pId != null and pId != '' and type != null and type != ''" >
+                    p_id=#{pId} and stype=#{type}
+            </if>
+        </where>
+        </select>
+
+        <insert id="addMenu" parameterType="list">
+            insert into w_p_menu (type,url,menuname,menukey,keyid,urltype,fatherId)
+            values
+                <foreach item="menu" collection="list" separator=",">
+                        (#{menu.type},#{menu.url},#{menu.menuname},newid(),#{menu.keyid},#{menu.urltype},#{menu.fatherid})
+                </foreach>
+        </insert>
+
+
+        <select id="getCount" resultType="com.yuyuedao.yydwechat.entity.Fans">
+                SELECT right(a.subtime,5) subtime,count(p.sid) nums from (SELECT CONVERT (VARCHAR (10),dateadd(d, number, GETDATE() + 1 - 7),23) AS subtime
+                FROM master..spt_values n WHERE n.type = 'p' AND n.number <![CDATA[ < ]]>  7 ) a LEFT JOIN w_p_fans p
+                ON a.subtime = CONVERT(VARCHAR(10),p.subtime,23) and p.accountid = #{accountId}
+                GROUP BY a.subtime ORDER BY a.subtime
+        </select>
+
+
+
+        <select id="getMenu" resultType="com.yuyuedao.yydwechat.entity.W_p_menu">
+        select *
+        from w_p_menu
+        <where>
+                <if test="sid != null and sid != ''">
+                        fatherId=#{sid}
+                </if>
+        </where>
+        </select>
+
+
+        <select id="sameMenu" resultType="com.yuyuedao.yydwechat.entity.W_p_menu">
+                select *
+                from w_p_menu where fatherId is null
+
+        </select>
+
+        <select id="getMenuByKey" resultType="com.yuyuedao.yydwechat.entity.W_p_menu">
+                select *
+                from w_p_menu
+                <where>
+                        <if test="key != null and key != ''">
+                                menukey=#{key}
+                        </if>
+                </where>
+        </select>
+
+        </mapper>
